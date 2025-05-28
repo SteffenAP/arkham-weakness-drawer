@@ -103,10 +103,16 @@ async def load_weburl(draws):
         card_urls.append(card['url'])
     return card_urls
 
-def filter_expansion():
-    basic_weaknesses = [card for card in all_basic_weaknesses if card[2] in class_expansions]
+def filter_expansion(selected_sets):
+    basic_weaknesses = [card for card in all_basic_weaknesses if card[2] in selected_sets]
     return basic_weaknesses
 
+def filter_traits(cards, traits):
+    result = []
+    for card in cards:
+        if any(trait in card[4] for trait in traits):
+            result.append(card)
+    return result
 
 def draw(cards, players):
     playercards = []
@@ -125,8 +131,8 @@ selected_sets = st.multiselect("Choose expansions to include", options=class_exp
 
 trait_input = st.text_input("Filter by traits (comma-separated, optional)", placeholder="e.g., Madness,Pact")
 
-cards = st.number_input("Cards per player", min_value=1, max_value=5, value=1)
-players = st.number_input("Number of players", min_value=1, max_value=8, value=1)
+cards = st.number_input("Cards per player", min_value=1, max_value=6, value=1)
+players = st.number_input("Number of players", min_value=1, max_value=4, value=1)
 
 if st.button("Draw!"):
     pool = filter_expansion(selected_sets)
