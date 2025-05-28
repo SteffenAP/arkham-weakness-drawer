@@ -143,9 +143,16 @@ if st.button("Draw!"):
         st.error("Not enough cards to draw from! Reduce players/cards or broaden filters.")
     else:
         results = draw(cards, players, pool)
-        for i, player in enumerate(results):
-            st.subheader(f"Player {i+1}")
-            df = pd.DataFrame(player, columns=["Name", "ID", "Expansion", "Link", "Traits"])
-            df["Link"] = df["Link"].apply(lambda url: f'<a href="{url}" target="_blank">🔗 Link</a>')
-            st.markdown(df.to_html(escape=False, index=False), unsafe_allow_html=True)
+        for player_num, cards in enumerate(results):
+            st.markdown(f"### Player {player_num + 1}")
+
+            for card in cards:
+                name, card_id, expansion, url, traits = card
+                st.markdown(
+                    f"**{name}**  \n"
+                    f"*{expansion}*  \n"
+                    f"[🔗 View on ArkhamDB]({url})  \n"
+                    f"<hr>",  # optional divider line
+                    unsafe_allow_html=True
+                )
 
