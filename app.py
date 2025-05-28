@@ -55,9 +55,11 @@ def filter_expansion(selected_sets):
     return basic_weaknesses
 
 def filter_traits(cards, traits):
+    traits = [t.lower().strip() for t in traits]  # Normalize input traits
     result = []
     for card in cards:
-        if any(trait in card[4] for trait in traits):
+        card_traits = card[4].lower() if card[4] else ""  # Normalize card traits
+        if any(trait in card_traits for trait in traits):
             result.append(card)
     return result
 
