@@ -124,10 +124,13 @@ def filter_traits(cards, traits):
         All possible weakness cards with applied filters
 
     """
-    traits = [t.lower().strip() for t in traits]  # Normalize input traits
+    if not selected_traits:
+        return cards
+    
+    traits = [t.lower().strip() for t in traits]
     result = []
     for card in cards:
-        card_traits = card[4].lower() if card[4] else ""  # Normalize card traits
+        card_traits = card[4].lower() if card[4] else "" 
         if any(trait in card_traits for trait in traits):
             result.append(card)
     return result
@@ -179,9 +182,7 @@ players = st.number_input("Number of players", min_value=1, max_value=4, value=1
 
 if st.button("Draw!"):
     pool = filter_expansion(selected_sets)
-    if trait_input:
-        traits = [t.strip() for t in trait_input.split(',')]
-        pool = filter_traits(pool, traits)
+    pool = filter_traits(pool, selected_traits)
     if len(pool) < cards * players:
         st.error("Not enough cards to draw from! Reduce players/cards or broaden filters.")
     else:
