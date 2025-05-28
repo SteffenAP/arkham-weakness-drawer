@@ -1,8 +1,5 @@
 import streamlit as st
 import numpy as np
-import pandas as pd
-import httpx
-import asyncio
 
 deck_id = 4327199
 all_basic_weaknesses = [['Amnesia', '01096', 'Core Set', 'https://arkhamdb.com/card/01096', 'Madness.'], ['Paranoia', '01097', 'Core Set', 'https://arkhamdb.com/card/01097', 'Madness.'], ['Haunted', '01098', 'Core Set', 'https://arkhamdb.com/card/01098', 'Curse.'], 
@@ -35,75 +32,6 @@ all_basic_weaknesses = [['Amnesia', '01096', 'Core Set', 'https://arkhamdb.com/c
 
 class_expansions = ['The Forgotten Age', 'The Dream-Eaters', 'Return to the Forgotten Age', 'Stella Clark', 'The Scarlet Keys Investigator Expansion', 'Winifred Habbamock', 'Core Set', 'The Circle Undone', 'Harvey Walters', 'Return to the Dunwich Legacy', 'The Dunwich Legacy', 'Edge of the Earth Investigator Expansion', 'Return to the Path to Carcosa', 'The Feast of Hemlock Vale Investigator Expansion', 'Jacqueline Fine', 'Nathaniel Cho', 'Return to the Circle Undone', 'The Innsmouth Conspiracy', 'The Path to Carcosa', 'The Drowned City Investigator Expansion']
 
-
-async def get_deck():
-    async with httpx.AsyncClient(base_url="https://arkhamdb.com/") as client:
-        decklist = await client.get(f"/api/public/deck/{deck_id}.json?_format=json")
-    if decklist.status_code == 200:
-        return decklist.json()
-    else:
-        return 'Failed'
-
-async def load_weakness():
-    decklist = await get_deck()
-    weaknesses_dict = decklist['slots']
-    weaknesses = []
-    for value in weaknesses_dict.items():
-        weaknesses.append(value[0])
-    return weaknesses
-
-async def filtered_weaknesses():
-    weaknesses = await load_weakness()
-    weakness_tags = [[]]
-    for name in weaknesses:
-        async with httpx.AsyncClient(base_url="https://arkhamdb.com/") as client:
-            card = await client.get(f"api/public/card/{name}.json?_format=json")
-        if card.status_code == 200:
-            temp = []
-            temp.append((card.json())['name'])
-            temp.append((card.json())['code'])
-            temp.append((card.json())['pack_name'])
-            temp.append((card.json())['url'])
-            temp.append((card.json())['traits'])
-            weakness_tags.append(temp)
-        else:
-            return 'Failed'  
-    return weakness_tags  
-
-async def draw_weakness_values(draws):
-    weakness = await load_weakness()
-    drawn = np.random.choice(np.arange(0, len(weakness) + 1), size=draws, replace=False)
-    cards = []
-    for d in drawn:
-        cards.append(weakness[d])
-    return cards
-    
-async def load_drawn_cards(draws):
-    cards = await draw_weakness_values(draws)
-    names = []
-    for c in cards:
-        async with httpx.AsyncClient(base_url="https://arkhamdb.com/") as client:
-            card = await client.get(f"api/public/card/{c}.json?_format=json")
-        if card.status_code == 200:
-            names.append(card.json())
-        else:
-            return 'Failed'
-    return names
-
-async def load_names(draws):
-    cards = await load_drawn_cards(draws)
-    card_name = []
-    for card in cards:
-        card_name.append(card['name'])
-    return card_name
-
-async def load_weburl(draws):
-    cards = await load_drawn_cards(draws)
-    card_urls = []
-    for card in cards:
-        card_urls.append(card['url'])
-    return card_urls
-
 def display_cards(players_cards):
     for i, player_cards in enumerate(players_cards):
         st.markdown(f"### Player {i+1}")
@@ -113,10 +41,13 @@ def display_cards(players_cards):
         for col, card in zip(cols, player_cards):
             name, _, expansion, link, _ = card
             col.markdown(
-                f"**{name}**  \n"
-                f"*{expansion}*  \n"
-                f"[🔗 ArkhamDB]({link})",
-                unsafe_allow_html=True
+                f"""
+                <div style="padding: 10px; border: 1px solid #444; border-radius: 8px; background-color: #111;">
+                    <strong>{name}</strong><br>
+                    <em>{expansion}</em><br>
+                    <a href="{link}" target="_blank">🔗 ArkhamDB</a>
+                </div>
+                """, unsafe_allow_html=True
             )
 
 def filter_expansion(selected_sets):
