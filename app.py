@@ -146,5 +146,6 @@ if st.button("Draw!"):
         for i, player in enumerate(results):
             st.subheader(f"Player {i+1}")
             df = pd.DataFrame(player, columns=["Name", "ID", "Expansion", "Link", "Traits"])
-            df["Link"] = df["Link"].apply(lambda url: f"[🔗]({url})")
-            st.dataframe(df)
+            df["Link"] = df["Link"].apply(lambda url: f"[🔗 Link]({url})")
+            st.markdown(df.to_markdown(index=False), unsafe_allow_html=True)
+
