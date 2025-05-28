@@ -146,13 +146,12 @@ if st.button("Draw!"):
         for player_num, cards in enumerate(results):
             st.markdown(f"### Player {player_num + 1}")
 
-            for card in cards:
+            cols = st.columns(len(cards))  # One column per card
+
+            for idx, card in enumerate(cards):
                 name, card_id, expansion, url, traits = card
-                st.markdown(
-                    f"**{name}**  \n"
-                    f"*{expansion}*  \n"
-                    f"[🔗 View on ArkhamDB]({url})  \n"
-                    f"<hr>",  # optional divider line
-                    unsafe_allow_html=True
-                )
+                with cols[idx]:
+                    st.markdown(f"**{name}**")
+                    st.markdown(f"*{expansion}*")
+                    st.markdown(f"[🔗 {url}]({url})")
 
