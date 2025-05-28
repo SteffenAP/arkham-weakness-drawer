@@ -81,10 +81,9 @@ def extract_unique_traits(cards):
     """
     trait_set = set()
     for card in cards:
-        traits_raw = card[4]
+        traits_raw = card[4] 
         if traits_raw:
-            cleaned = traits_raw.replace('.', '')
-            traits = [t.strip() for t in cleaned.split(' ') if t.strip()]
+            traits = [t.strip().rstrip('.') for t in traits_raw.split('. ') if t.strip()]
             for t in traits:
                 trait_set.add(t)
     return sorted(trait_set)
