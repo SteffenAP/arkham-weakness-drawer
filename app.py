@@ -62,6 +62,32 @@ def display_cards(players_cards):
                 """, unsafe_allow_html=True
             )
 
+def extract_unique_traits(cards):
+    """
+    Extracts all unique traits from all weaknesses
+
+    Parameters
+    ----------
+
+    cards: list
+        All basic weaknesses
+
+    Returns
+    -------
+
+    sorted(trait_set): list
+        All unique trait names
+
+    """
+    trait_set = set()
+    for card in cards:
+        traits_raw = card[4]
+        if traits_raw:
+            traits = [t.strip() for t in traits_raw.split('. ') if t.strip()]
+            for t in traits:
+                trait_set.add(t)
+    return sorted(trait_set)
+
 def filter_expansion(selected_sets):
     """
     Filters weaknesses based on marked expansion sets
@@ -146,7 +172,7 @@ selected_sets = st.multiselect(
     key="expansion_multiselect"
 )
 
-trait_input = st.text_input("Filter by traits (comma-separated, optional)", placeholder="e.g., Madness,Pact")
+selected_traits = st.multiselect("Filter by traits (optional)", options=extract_unique_traits(all_basic_weaknesses))
 
 cards = st.number_input("Cards per player", min_value=1, max_value=6, value=1)
 players = st.number_input("Number of players", min_value=1, max_value=4, value=1)
