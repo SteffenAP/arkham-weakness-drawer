@@ -42,7 +42,7 @@ def display_cards(players_cards):
             name, _, expansion, link, _ = card
             col.markdown(
                 f"""
-                <div style="padding: 10px; border: 1px solid #444; border-radius: 8px; background-color: #111;">
+                <div>
                     <strong>{name}</strong><br>
                     <em>{expansion}</em><br>
                     <a href="{link}" target="_blank">🔗 ArkhamDB</a>
