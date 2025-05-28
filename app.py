@@ -177,7 +177,7 @@ selected_sets = st.multiselect(
 
 selected_traits = st.multiselect("Filter by traits (optional)", options=extract_unique_traits(all_basic_weaknesses))
 
-cards = st.number_input("Cards per player", min_value=1, max_value=6, value=1)
+cards = st.number_input("Cards per player", min_value=1, max_value=5, value=1)
 players = st.number_input("Number of players", min_value=1, max_value=4, value=1)
 
 if st.button("Draw!"):
