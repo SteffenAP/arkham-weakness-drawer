@@ -35,23 +35,6 @@ all_basic_weaknesses = [['Amnesia', '01096', 'Core Set', 'https://arkhamdb.com/c
 
 class_expansions = ['The Forgotten Age', 'The Dream-Eaters', 'Return to the Forgotten Age', 'Stella Clark', 'The Scarlet Keys Investigator Expansion', 'Winifred Habbamock', 'Core Set', 'The Circle Undone', 'Harvey Walters', 'Return to the Dunwich Legacy', 'The Dunwich Legacy', 'Edge of the Earth Investigator Expansion', 'Return to the Path to Carcosa', 'The Feast of Hemlock Vale Investigator Expansion', 'Jacqueline Fine', 'Nathaniel Cho', 'Return to the Circle Undone', 'The Innsmouth Conspiracy', 'The Path to Carcosa', 'The Drowned City Investigator Expansion']
 
-CARD_STYLE = """
-    <div style="
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 12px;
-        min-height: 120px;
-        text-align: center;
-        background-color: #f9f9f9;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    ">
-        <strong>{name}</strong><br>
-        <em>{expansion}</em><br>
-        <a href="{url}" target="_blank">🔗 {url}</a>
-    </div>
-"""
 
 async def get_deck():
     async with httpx.AsyncClient(base_url="https://arkhamdb.com/") as client:
@@ -121,6 +104,21 @@ async def load_weburl(draws):
         card_urls.append(card['url'])
     return card_urls
 
+def display_cards(players_cards):
+    for i, player_cards in enumerate(players_cards):
+        st.markdown(f"### Player {i+1}")
+
+        cols = st.columns(len(player_cards))
+
+        for col, card in zip(cols, player_cards):
+            name, _, expansion, link, _ = card
+            col.markdown(
+                f"**{name}**  \n"
+                f"*{expansion}*  \n"
+                f"[🔗 ArkhamDB]({link})",
+                unsafe_allow_html=True
+            )
+
 def filter_expansion(selected_sets):
     basic_weaknesses = [card for card in all_basic_weaknesses if card[2] in selected_sets]
     return basic_weaknesses
@@ -161,16 +159,5 @@ if st.button("Draw!"):
         st.error("Not enough cards to draw from! Reduce players/cards or broaden filters.")
     else:
         results = draw(cards, players, pool)
-        for player_num, cards in enumerate(results):
-            st.markdown(f"### Player {player_num + 1}")
-
-            cols = st.columns(len(cards))  # One column per card
-
-            for idx, card in enumerate(cards):
-                name, card_id, expansion, url, traits = card
-                with cols[idx]:
-                    st.markdown(
-                        CARD_STYLE.format(name=name, expansion=expansion, url=url),
-                        unsafe_allow_html=True
-                    )
+        display_cards(results)
 
