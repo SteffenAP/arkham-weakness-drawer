@@ -1,7 +1,8 @@
-import httpx
+import streamlit as st
 import numpy as np
-import asyncio
 import pandas as pd
+import httpx
+import asyncio
 
 deck_id = 4327199
 all_basic_weaknesses = [['Amnesia', '01096', 'Core Set', 'https://arkhamdb.com/card/01096', 'Madness.'], ['Paranoia', '01097', 'Core Set', 'https://arkhamdb.com/card/01097', 'Madness.'], ['Haunted', '01098', 'Core Set', 'https://arkhamdb.com/card/01098', 'Curse.'], 
