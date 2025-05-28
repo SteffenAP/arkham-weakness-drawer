@@ -161,3 +161,14 @@ if st.button("Draw!"):
         results = draw(cards, players, pool)
         display_cards(results)
 
+
+st.markdown(
+    """
+    <hr>
+    <small style="color: gray;">
+    Data Source: Card data provided by <a href="https://arkhamdb.com/" target="_blank">ArkhamDB</a>. 
+    Arkham Horror is a trademark of Fantasy Flight Games. This app is a fan-made tool and is not affiliated with or endorsed by Fantasy Flight Games.
+    </small>
+    """,
+    unsafe_allow_html=True,
+)
