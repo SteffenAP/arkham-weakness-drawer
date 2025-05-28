@@ -143,7 +143,27 @@ def draw(cards, players, pool):
 
 st.title("Arkham Horror Weakness Drawer")
 
-selected_sets = st.multiselect("Choose expansions to include", options=class_expansions, default=class_expansions)
+debug_mode = st.checkbox("Enable debug mode")
+
+# --- EXPANSION SELECTION ---
+if debug_mode:
+    selected_sets = st.multiselect("Choose expansions to include", options=class_expansions, default=class_expansions)
+else:
+    # If debug mode off, default selections only
+    selected_sets = st.multiselect("Choose expansions to include", options=class_expansions, default=class_expansions)
+
+# --- CUSTOM CARDS INPUT (debug only) ---
+custom_cards = []
+if debug_mode:
+    st.write("### Add custom cards (one per line, CSV: Name,Code,Expansion,URL,Traits)")
+    custom_cards_text = st.text_area("Custom cards")
+    if custom_cards_text:
+        for line in custom_cards_text.splitlines():
+            parts = [p.strip() for p in line.split(',')]
+            if len(parts) == 5:
+                custom_cards.append(parts)
+            else:
+                st.warning(f"Ignored invalid line (needs 5 comma-separated fields): {line}")
 
 trait_input = st.text_input("Filter by traits (comma-separated, optional)", placeholder="e.g., Madness,Pact")
 
@@ -152,12 +172,19 @@ players = st.number_input("Number of players", min_value=1, max_value=4, value=1
 
 if st.button("Draw!"):
     pool = filter_expansion(selected_sets)
+
+    if debug_mode and custom_cards:
+        existing_codes = {card[1] for card in pool}
+        for c in custom_cards:
+            if c[1] not in existing_codes:
+                pool.append(c)
+
     if trait_input:
         traits = [t.strip() for t in trait_input.split(',')]
         pool = filter_traits(pool, traits)
+
     if len(pool) < cards * players:
         st.error("Not enough cards to draw from! Reduce players/cards or broaden filters.")
     else:
         results = draw(cards, players, pool)
         display_cards(results)
-
