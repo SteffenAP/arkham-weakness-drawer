@@ -74,7 +74,15 @@ def draw(cards, players, pool):
 
 st.title("Arkham Horror Weakness Drawer")
 
-selected_sets = st.multiselect("Choose expansions to include", options=class_expansions, default=class_expansions)
+if "selected_sets" not in st.session_state:
+    st.session_state.selected_sets = class_expansions.copy()
+
+selected_sets = st.multiselect(
+    "Choose expansions to include",
+    options=class_expansions,
+    default=st.session_state.selected_sets,
+    key="expansion_multiselect"
+)
 
 trait_input = st.text_input("Filter by traits (comma-separated, optional)", placeholder="e.g., Madness,Pact")
 
