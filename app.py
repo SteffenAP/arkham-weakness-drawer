@@ -32,7 +32,19 @@ all_basic_weaknesses = [['Amnesia', '01096', 'Core Set', 'https://arkhamdb.com/c
 
 class_expansions = ['The Forgotten Age', 'The Dream-Eaters', 'Return to the Forgotten Age', 'Stella Clark', 'The Scarlet Keys Investigator Expansion', 'Winifred Habbamock', 'Core Set', 'The Circle Undone', 'Harvey Walters', 'Return to the Dunwich Legacy', 'The Dunwich Legacy', 'Edge of the Earth Investigator Expansion', 'Return to the Path to Carcosa', 'The Feast of Hemlock Vale Investigator Expansion', 'Jacqueline Fine', 'Nathaniel Cho', 'Return to the Circle Undone', 'The Innsmouth Conspiracy', 'The Path to Carcosa', 'The Drowned City Investigator Expansion']
 
+
 def display_cards(players_cards):
+    """
+    Displays the player cards in the given format
+    of name, expansion, link per player
+
+    Parameters
+    ----------
+
+    players_cards: list
+        Selected expansion sets
+
+    """
     for i, player_cards in enumerate(players_cards):
         st.markdown(f"### Player {i+1}")
 
@@ -51,10 +63,41 @@ def display_cards(players_cards):
             )
 
 def filter_expansion(selected_sets):
+    """
+    Filters weaknesses based on marked expansion sets
+
+    Parameters
+    ----------
+
+    selected_sets: list
+        Selected expansion sets
+
+    Returns
+    -------
+    basic_weaknesses: list
+        Weakness cards from all selected expansion sets
+    """
     basic_weaknesses = [card for card in all_basic_weaknesses if card[2] in selected_sets]
     return basic_weaknesses
 
 def filter_traits(cards, traits):
+    """
+    Filters card pool based on selected specific traits
+
+    Parameters
+    ----------
+
+    cards: list
+        Available filtered weakness cardpool
+    traits: list
+        Filtered traits
+    
+    Returns
+    -------
+    result: list
+        All possible weakness cards with applied filters
+
+    """
     traits = [t.lower().strip() for t in traits]  # Normalize input traits
     result = []
     for card in cards:
@@ -64,6 +107,23 @@ def filter_traits(cards, traits):
     return result
 
 def draw(cards, players, pool):
+    """
+    Draw given cards per given player from given cardpool
+
+    Parameters
+    ----------
+
+    cards: int
+        Number of cards to be drawn per player
+    players: int
+        Number of players to draw cards for
+    pool: list
+        Available cardpool
+    Returns
+    -------
+    playercards: list
+        Drawn weakness cards
+    """
     playercards = []
     drawn = np.random.choice(range(len(pool)), size=cards*players, replace=False)
     for player in range(players):
@@ -108,6 +168,9 @@ st.markdown(
     <hr>
     <small style="color: gray;">
     Arkham Horror: The Card Game is a trademark of Fantasy Flight Games. This app is a fan-made tool and is not affiliated with or endorsed by Fantasy Flight Games. Card data provided by <a href="https://arkhamdb.com/" target="_blank">ArkhamDB</a>. 
+    </small>
+    <small style="color: gray;">
+    Created by <a href="https://github.com/SteffenAP">SteffenAP</a>. Submit bug-requests via the GitHub Repository. Contact me @ stanpe@hotmail.no for inquiries.
     </small>
     """,
     unsafe_allow_html=True,
