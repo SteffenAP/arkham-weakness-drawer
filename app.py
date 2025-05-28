@@ -114,14 +114,14 @@ def filter_traits(cards, traits):
             result.append(card)
     return result
 
-def draw(cards, players):
+def draw(cards, players, pool):
     playercards = []
-    drawn = np.random.choice(np.arange(0, len(all_basic_weaknesses)), size=cards*players, replace=False)
+    drawn = np.random.choice(range(len(pool)), size=cards*players, replace=False)
     for player in range(players):
         temp = []
         for card in range(cards):
             draw = drawn[(player * cards) + card]
-            temp.append(all_basic_weaknesses[draw])
+            temp.append(pool[draw])
         playercards.append(temp)
     return playercards
 
